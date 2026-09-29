@@ -1,0 +1,24 @@
+version: 2
+updates:
+  # Dockerfile FROM lines: the runtime (whose tag is the image version) and
+  # the Ubuntu base, both tag+digest pinned.
+  - package-ecosystem: docker
+    directory: /
+    schedule:
+      interval: weekly
+    commit-message:
+      prefix: deps
+    ignore:
+      # Stay on the LTS release: digest bumps only; move to the next LTS
+      # by hand.
+      - dependency-name: ubuntu
+        update-types: ["version-update:semver-major", "version-update:semver-minor"]
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    commit-message:
+      prefix: ci
+    groups:
+      actions:
+        patterns: ["*"]

@@ -1,0 +1,2 @@
+# The base image copies nothing from the build context.
+*
