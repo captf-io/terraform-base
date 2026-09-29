@@ -3,7 +3,8 @@
 # examples/Dockerfile.module, check its config against the image
 # contract, then run init/validate/apply/destroy the way the CAPTF runner
 # does: read-only root, network off, providers from the mirror only, and the
-# working directory on a tmpfs at /captf/work.
+# working directory on a tmpfs at /captf/work (exec, like the emptyDir the
+# Job mounts; docker's --tmpfs defaults to noexec).
 #
 # Usage: test/smoke.sh <base-image> <runtime-version>
 # Env:   ENGINE (podman|docker, default podman), RUNTIME (terraform|tofu),
@@ -37,7 +38,7 @@ user=$("$engine" image inspect --format '{{.Config.User}}' "$module_image")
 
 echo "--- layout and runner-style run (read-only, no network)"
 "$engine" run --rm --network=none --read-only \
-  --tmpfs /captf/work:rw,mode=1777 --tmpfs /tmp:rw,mode=1777 \
+  --tmpfs /captf/work:rw,exec,mode=1777 --tmpfs /tmp:rw,exec,mode=1777 \
   -v "$here/root:/captf/config:ro,Z" \
   -e HOME=/captf/work -e TF_DATA_DIR=/captf/work/.terraform \
   -e TF_CLI_CONFIG_FILE=/captf/work/cli.tfrc -e TF_IN_AUTOMATION=1 -e TF_INPUT=0 \
@@ -66,7 +67,7 @@ EOF
     r=/captf/runtime
     $r version
     $r init -input=false -no-color
-    $r validate -json -no-color >/dev/null
+    $r validate -json -no-color >/tmp/validate.json || { cat /tmp/validate.json; exit 1; }
     $r apply -auto-approve -input=false -no-color
     $r destroy -auto-approve -input=false -no-color
   '
