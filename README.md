@@ -1,10 +1,13 @@
-<!-- captf:header -->
 <h1 align="center">
-  <a href="https://captf.io/docs/"><img
-    src="https://raw.githubusercontent.com/captf-io/.github/refs/heads/main/readme/banners/terraform-base.svg"
-    width="100%"
-    alt="terraform-base: The Terraform base image for CAPTF module images"></a>
+  <a href="https://captf.io/"><img
+    src="https://captf.io/assets/readme/mark.svg"
+    width="72" height="72" alt="CAPTF"></a>
+  <br>
+  terraform-base
 </h1>
+
+<p align="center">The Terraform base image for CAPTF module images</p>
+
 <p align="center">
   <a href="https://github.com/captf-io/terraform-base/actions/workflows/build.yml"><img
     src="https://img.shields.io/github/actions/workflow/status/captf-io/terraform-base/build.yml?branch=main&amp;label=build&amp;labelColor=161B3A&amp;style=flat-square"
@@ -15,18 +18,15 @@
   <a href="https://captf.io/docs/"><img
     src="https://img.shields.io/static/v1?label=docs&amp;message=captf.io&amp;color=5B8CFF&amp;labelColor=161B3A&amp;style=flat-square"
     alt="docs captf.io"></a>
-  <a href="LICENSE.md"><img
+  <a href="https://github.com/captf-io/terraform-base/blob/main/LICENSE.md"><img
     src="https://img.shields.io/static/v1?label=license&amp;message=Apache-2.0&amp;color=FFD84D&amp;labelColor=161B3A&amp;style=flat-square"
     alt="license Apache-2.0"></a>
 </p>
-<!-- /captf:header -->
 
-<!-- captf:status -->
 > [!NOTE]
 > **Pre-release.** CAPTF is `v1alpha1`: its API and its
 > [module contract](https://captf.io/docs/module-author/contract/index.html)
-> may still change before the first release.
-<!-- /captf:status -->
+> may still change between releases.
 
 Base image for [CAPTF](https://github.com/captf-io) module images that run
 on Terraform. It lays out the fixed paths of the `v1alpha1` image contract so
@@ -113,16 +113,15 @@ manual dispatch also build the multi-arch image with QEMU and push it to
 GHCR with SBOM and provenance attestations, under the tags above. The
 weekly rebuild picks up Ubuntu security updates.
 
-<!-- captf:footer -->
 <br>
 <p align="center">
   <img
-    src="https://raw.githubusercontent.com/captf-io/.github/refs/heads/main/readme/assets/divider.svg"
+    src="https://captf.io/assets/readme/divider.svg"
     width="100%" height="4" alt="">
 </p>
 <p align="center">
   <a href="https://captf.io/"><img
-    src="https://raw.githubusercontent.com/captf-io/.github/refs/heads/main/readme/assets/mark.svg"
+    src="https://captf.io/assets/readme/mark.svg"
     width="40" height="40" alt="CAPTF"></a>
   <br>
   <a href="https://captf.io/docs/"
@@ -136,6 +135,6 @@ weekly rebuild picks up Ubuntu security updates.
   <br>
   <sub>Built for
     <a href="https://cluster-api.sigs.k8s.io/">Cluster API</a>.
-    <a href="LICENSE.md">Apache 2.0</a>.</sub>
+    <a href="https://github.com/captf-io/terraform-base/blob/main/LICENSE.md"
+    >Apache 2.0</a>.</sub>
 </p>
-<!-- /captf:footer -->
