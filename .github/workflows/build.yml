@@ -32,38 +32,40 @@ concurrency:
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
-  # Every source file carries the Apache-2.0 license header; .licenserc.yaml
-  # says which files need it.
-  license-headers:
-    runs-on: ubuntu-24.04
-    steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with:
-          persist-credentials: false
-      - name: Check license headers
-        run: make check-headers ENGINE=docker
-
+  # Builds the base and smoke-tests a module image FROM it. A pull request
+  # tests amd64 only; a push to main, the weekly run and a manual run add
+  # arm64. The amd64 leg also checks the license headers (.licenserc.yaml
+  # says which files need them), which saves a job.
   test:
     name: test (${{ matrix.runner }})
     strategy:
       fail-fast: false
       matrix:
-        runner: [ubuntu-24.04, ubuntu-24.04-arm]
+        runner: ${{ fromJSON(github.event_name == 'pull_request' && '["ubuntu-24.04"]' || '["ubuntu-24.04","ubuntu-24.04-arm"]') }}
     runs-on: ${{ matrix.runner }}
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Check license headers
+        if: matrix.runner == 'ubuntu-24.04'
+        run: make check-headers ENGINE=docker
       - name: Build and smoke-test
         run: make test ENGINE=docker
 
   publish:
-    needs: [license-headers, test]
+    needs: [test]
     if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-24.04
+    timeout-minutes: 15
     permissions:
       contents: read
       packages: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
 
       - name: Runtime version
         id: version
