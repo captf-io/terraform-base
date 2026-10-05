@@ -20,8 +20,18 @@ updates:
     directory: /
     schedule:
       interval: weekly
+      day: tuesday
+      time: "05:00"
+      timezone: "Etc/UTC"
+    # No auto-rebase: each rebase re-runs CI on the PR. Two open PRs at
+    # most, and one grouped PR per ecosystem per run.
+    rebase-strategy: disabled
+    open-pull-requests-limit: 2
     commit-message:
       prefix: deps
+    groups:
+      docker:
+        patterns: ["*"]
     ignore:
       # Stay on the LTS release: digest bumps only; move to the next LTS
       # by hand.
@@ -31,6 +41,13 @@ updates:
     directory: /
     schedule:
       interval: weekly
+      day: tuesday
+      time: "05:00"
+      timezone: "Etc/UTC"
+    # No auto-rebase: each rebase re-runs CI on the PR. Two open PRs at
+    # most, and one grouped PR per ecosystem per run.
+    rebase-strategy: disabled
+    open-pull-requests-limit: 2
     commit-message:
       prefix: ci
     groups:
