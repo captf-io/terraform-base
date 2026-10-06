@@ -15,7 +15,9 @@
 # Module image on the captf Terraform base. Copy this file into your module's
 # root directory as Dockerfile, then:
 #
-#   podman build --build-arg ROLE=cluster \
+#   podman build \
+#     --build-arg BASE=ghcr.io/captf-io/terraform-base:1.16.5@sha256:<digest> \
+#     --build-arg ROLE=cluster \
 #     --build-arg IMAGE_SOURCE=https://github.com/<org>/<repo> \
 #     --build-arg IMAGE_REVISION="$(git rev-parse HEAD)" \
 #     --build-arg IMAGE_VERSION=<tag> -t <registry>/<repo>:<tag> .
@@ -28,10 +30,11 @@
 # Add a .dockerignore (podman reads it too) with at least `.terraform/`,
 # `*.tfstate*` and `Dockerfile` so none of them lands in /captf/module.
 #
-# Pin BASE by digest for reproducible builds:
-#   ghcr.io/captf-io/terraform-base:<version>@sha256:<digest>
-
-ARG BASE=ghcr.io/captf-io/terraform-base:1.16.4
+# BASE has no default, so a build can never silently use a stale base: pass
+# it, pinned by digest for reproducible builds (find the digest with
+# `skopeo inspect --format '{{.Digest}}' docker://<image>:<version>`):
+#   --build-arg BASE=ghcr.io/captf-io/terraform-base:1.16.5@sha256:<digest>
+ARG BASE
 
 # Hermetic provider mirror for every platform the image publishes. Needs
 # registry egress at build time; drop this stage (and the COPY --from=mirror

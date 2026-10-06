@@ -65,14 +65,18 @@ Copy [`examples/Dockerfile.module`](examples/Dockerfile.module) into your
 module's root as `Dockerfile` and build it:
 
 ```sh
-podman build --build-arg ROLE=cluster \
+podman build \
+  --build-arg BASE=ghcr.io/captf-io/terraform-base:<version>@sha256:<digest> \
+  --build-arg ROLE=cluster \
   --build-arg IMAGE_SOURCE=https://github.com/<org>/<repo> \
   --build-arg IMAGE_REVISION="$(git rev-parse HEAD)" \
   --build-arg IMAGE_VERSION=<tag> -t <registry>/<repo>:<tag> .
 tfcapi-lint image <registry>/<repo>:<tag> --role cluster --strict
 ```
 
-It is a two-stage build: a `mirror` stage on the same base runs `terraform
+`BASE` has no default, so a build never silently uses a stale base: pass
+the tag and digest you have tested. It is a two-stage build: a `mirror`
+stage on the same base runs `terraform
 get` and `terraform providers mirror` for `linux_amd64` and `linux_arm64`
 into `/captf/providers`, and the final stage copies that mirror and the
 module into the base, owned by `65532`, and sets `io.captf.role` and the OCI
