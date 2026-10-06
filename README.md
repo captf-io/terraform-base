@@ -50,14 +50,20 @@ Images: `ghcr.io/captf-io/terraform-base`, multi-arch (`linux/amd64`,
 
 ## Tags
 
+Each build is of the Terraform version pinned in the [`Dockerfile`](Dockerfile)
+(currently 1.16.5; `<version>` below). It sets all four tags:
+
 | Tag | Meaning |
 | --- | --- |
-| `1.16.4` | Newest build for that Terraform release (rebuilt weekly for OS updates) |
-| `1.16` | Newest build of the newest patch release of that minor |
-| `1.16.4-YYYYMMDD` | That day's build; does not move |
+| `<version>` | Newest build of that Terraform release |
+| `<major.minor>` | Newest build of the newest patch release of that minor |
+| `<version>-YYYYMMDD` | The last build on that UTC day; a later build the same day overwrites it |
 | `latest` | Newest build |
 
-Pin a module image's base by digest for reproducible builds.
+The weekly rebuild (for Ubuntu security updates) only rebuilds the version
+in the Dockerfile. When Dependabot bumps it, the older version's tags are
+not rebuilt again: `1.16.4` stays at its last build while `1.16.5` is
+current. Pin a module image's base by digest for reproducible builds.
 
 ## Verifying a signature
 
@@ -126,8 +132,7 @@ CI ([`.github/workflows/build.yml`](.github/workflows/build.yml)) runs
 and push. A push to `main`, the weekly schedule (Mondays 05:17 UTC) and a
 manual dispatch also build the multi-arch image with QEMU and push it to
 GHCR with SBOM and provenance attestations and a cosign signature, under the
-tags above. The
-weekly rebuild picks up Ubuntu security updates.
+tags above. The weekly rebuild picks up Ubuntu security updates.
 
 <br>
 <p align="center">
