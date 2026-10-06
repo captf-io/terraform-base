@@ -61,7 +61,8 @@ jobs:
     timeout-minutes: 15
     permissions:
       contents: read
-      packages: write
+      packages: write # push the image to GHCR
+      id-token: write # keyless cosign signing (OIDC)
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -88,8 +89,11 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      # Tags: <version> and <major.minor> move to the newest build of that
-      # runtime; <version>-<date> is fixed per day. Metadata goes on the
+      # Tags: every build of the version in the Dockerfile moves <version>,
+      # <major.minor> and latest to it, and sets <version>-<date> (UTC, so a
+      # later build the same day overwrites it). Once the Dockerfile moves
+      # to another version, the older version's tags stay on their last
+      # build. Metadata goes on the
       # manifests as annotations, not image labels, so module images built
       # FROM this one do not inherit the base's title or description.
       - uses: docker/metadata-action@dc802804100637a589fabce1cb79ff13a1411302 # v6.2.0
@@ -109,6 +113,7 @@ jobs:
             org.opencontainers.image.licenses=Apache-2.0
 
       - uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
+        id: build
         with:
           context: .
           file: Dockerfile
@@ -125,3 +130,15 @@ jobs:
             IMAGE_VERSION=${{ steps.version.outputs.full }}
           provenance: mode=max
           sbom: true
+
+      # Keyless signature (GitHub OIDC) on the pushed index digest, so it
+      # covers every tag that points at it. Verify:
+      #   cosign verify ghcr.io/captf-io/terraform-base:<tag> \
+      #     --certificate-identity-regexp '^https://github.com/captf-io/terraform-base/' \
+      #     --certificate-oidc-issuer https://token.actions.githubusercontent.com
+      - uses: sigstore/cosign-installer@6f9f17788090df1f26f669e9d70d6ae9567deba6 # v4.1.2
+      - name: Sign
+        env:
+          IMAGE: ${{ steps.version.outputs.image }}
+          DIGEST: ${{ steps.build.outputs.digest }}
+        run: cosign sign --yes "${IMAGE}@${DIGEST}"

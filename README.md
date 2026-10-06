@@ -59,6 +59,17 @@ Images: `ghcr.io/captf-io/terraform-base`, multi-arch (`linux/amd64`,
 
 Pin a module image's base by digest for reproducible builds.
 
+## Verifying a signature
+
+Every published digest is signed keylessly with cosign (GitHub OIDC), so
+the signature covers every tag that points at it:
+
+```sh
+cosign verify ghcr.io/captf-io/terraform-base:<tag> \
+  --certificate-identity-regexp '^https://github.com/captf-io/terraform-base/' \
+  --certificate-oidc-issuer https://token.actions.githubusercontent.com
+```
+
 ## Building a module image
 
 Copy [`examples/Dockerfile.module`](examples/Dockerfile.module) into your
@@ -114,7 +125,8 @@ CI ([`.github/workflows/build.yml`](.github/workflows/build.yml)) runs
 `make test` natively on amd64 and arm64 runners for every pull request
 and push. A push to `main`, the weekly schedule (Mondays 05:17 UTC) and a
 manual dispatch also build the multi-arch image with QEMU and push it to
-GHCR with SBOM and provenance attestations, under the tags above. The
+GHCR with SBOM and provenance attestations and a cosign signature, under the
+tags above. The
 weekly rebuild picks up Ubuntu security updates.
 
 <br>
