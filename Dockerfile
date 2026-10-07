@@ -47,7 +47,7 @@ RUN apt-get update \
  && apt-get install -y --no-install-recommends ca-certificates git openssh-client \
  && rm -rf /var/lib/apt/lists/* \
  && groupadd --gid 65532 captf \
- && useradd --uid 65532 --gid 65532 --no-create-home --home-dir /tmp \
+ && useradd -K UID_MAX=65532 --uid 65532 --gid 65532 --no-create-home --home-dir /tmp \
       --shell /usr/sbin/nologin captf \
  && install -d -m 0755 /captf
 
