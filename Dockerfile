@@ -29,7 +29,7 @@
 # runs unchanged on Ubuntu.
 FROM docker.io/hashicorp/terraform:1.16.5@sha256:c7926feace05d0f7e73542842bf3945924e955a1f782cf000ccbb8d18fa42d77 AS runtime
 
-FROM docker.io/library/ubuntu:26.04@sha256:da6fc2be547864451aa253836dd926da33623312df4a9a243e35dc877c378a78
+FROM docker.io/library/ubuntu:26.04@sha256:f144425ff09be612d6d9ad965196e9cdc23dae1f42110a8a11a3e9a8198759f7
 ARG RUNTIME_VERSION
 ARG IMAGE_SOURCE=""
 ARG IMAGE_REVISION=""
