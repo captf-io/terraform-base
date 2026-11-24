@@ -27,9 +27,9 @@
 
 # hashicorp/terraform is Alpine, but the binary is statically linked, so it
 # runs unchanged on Ubuntu.
-FROM docker.io/hashicorp/terraform:1.16.5@sha256:c7926feace05d0f7e73542842bf3945924e955a1f782cf000ccbb8d18fa42d77 AS runtime
+FROM docker.io/hashicorp/terraform:1.17.2@sha256:6e9c1e647c31a960dc9b59e13272f9111d90010c10b717f77ffb324767660475 AS runtime
 
-FROM docker.io/library/ubuntu:26.04@sha256:da6fc2be547864451aa253836dd926da33623312df4a9a243e35dc877c378a78
+FROM docker.io/library/ubuntu:26.04@sha256:d66b366dac61b575bee2aef07e9c26e8070096fbe84a3d4d3eb0da069b5d76db
 ARG RUNTIME_VERSION
 ARG IMAGE_SOURCE=""
 ARG IMAGE_REVISION=""
